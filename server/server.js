@@ -1,6 +1,6 @@
 'use strict';
 
-const express = require('express');
+const express = require("express");
 const app = express();
 const nunjucks = require('nunjucks');
 const server = require('http').Server(app);
@@ -17,7 +17,7 @@ nunjucks.configure('./client/views', {
 
 app.use('/assets', express.static('./client/public'));
 
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   res.render('index.html', { date: new Date() });
 });
 

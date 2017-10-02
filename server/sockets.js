@@ -2,9 +2,10 @@
 
 const MessageModel = require('./models/messages.model');
 
+// .on - what you receive
+// .emit - what you send
+
 module.exports = io => {
-  // .on - what you receive
-  // .emit - what you send
 
   io.on('connection', function (socket) {
     socket.emit('connected', "You are connected.");
@@ -41,5 +42,7 @@ module.exports = io => {
           }
         })
     });
+
   });
+
 };
