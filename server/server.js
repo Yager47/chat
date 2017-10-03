@@ -7,12 +7,15 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server, { serveClient: true });
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/chat', { useMongoClient: true });
+mongoose.connect('mongodb://localhost:27017/chat', { useMongoClient: true }, (err) => {
+  if (err) console.error("DB connect error", err);
+  console.log('DB connected');
+});
 mongoose.Promise = require('bluebird');
 
 nunjucks.configure('./client/views', {
-    autoescape: true,
-    express: app
+  autoescape: true,
+  express: app
 });
 
 app.use('/assets', express.static('./client/public'));

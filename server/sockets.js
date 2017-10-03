@@ -20,11 +20,12 @@ module.exports = io => {
         username: socket.id
       };
 
-      MessageModel.create(obj, err => {
+      var message = new MessageModel(obj);
+      message.$__save({}, (err, o) => {
+        console.log('YOOOOOOOOOOOOOOO');
         if (err) return console.error("MessageModel", err);
-        socket.emit('message', obj);
-        socket.to('all').emit('message', obj);
-        console.log('sent', content);
+        socket.emit('message', o);
+        socket.to('all').emit('message', o);
       });
     });
 
@@ -37,7 +38,7 @@ module.exports = io => {
         .lean()
         .exec( (err, messages) => {
           if (!err) {
-            socket.emit("history", messages);
+            socket.emit('history', messages);
             socket.to('all').emit('history', messages);
           }
         })

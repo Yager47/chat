@@ -12,4 +12,10 @@ const MessageSchema = new Schema({
   collection: "MessageCollection"
 });
 
+// const MessageSchema = new Schema({
+//   date: { type: Date, default: Date.now },
+//   content: String,
+//   username: String
+// }); 
+
 module.exports = mongoose.model('MessageModel', MessageSchema);
