@@ -6,7 +6,12 @@ const bcrypt = require('bcryptjs');
 
 const UsersSchema = new Schema({
   username: {type: String},
-  password: {type: String},
+  password: {
+    type: String
+    // validate: function(password) {
+    //   return password.length >= 8 && password.length <= 128;
+    // }
+  },
   createdAt: {type: Date, default: Date.now}
 }, {
   versionKey: false,

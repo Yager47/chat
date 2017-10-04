@@ -1,7 +1,6 @@
 'use strict';
 
 const MessageModel = require('./models/messages.model');
-
 // .on - what you receive
 // .emit - what you send
 
@@ -18,7 +17,10 @@ module.exports = io => {
         date: new Date(),
         content: content,
         username: socket.id
+        // var userId = socket.request.session.passport.user;
       };
+
+      console.log("SOCKET REQ", socket.request.user);
 
       var message = new MessageModel(obj);
       message.$__save({}, (err, o) => {

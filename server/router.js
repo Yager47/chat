@@ -3,6 +3,7 @@
 const express = require('express');
 const passport = require('passport');
 const UsersModel = require('./models/users.model');
+const MessagesModel = require('./models/messages.model');
 const _ = require('lodash');
 const config = require('./config');
 const bcrypt = require('bcryptjs');
@@ -33,7 +34,7 @@ module.exports = app => {
   app.use('/assets', express.static('./client/public'));
 
   app.get('/', checkAuth, (req, res) => {
-    res.render('index.html', { date: new Date() });
+    res.render('index.html', { date: new Date(), username: req.user.username });
   });
 
   app.post('/login', async( (req, res) => {
@@ -86,5 +87,10 @@ module.exports = app => {
     res.clearCookie('token');
     res.status(200).send({message: "Logged out successfully."});
   });
+
+  // app.post('/clear', (req, res) => {
+  //   MessagesModel.remove({}, function (e) {});
+  //   res.redirect('/');
+  // });
 
 };

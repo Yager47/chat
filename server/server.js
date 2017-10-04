@@ -8,11 +8,33 @@ const io = require('socket.io')(server, { serveClient: true });
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const passportSocketIo = require('passport.socketio');
 
 const passport = require('passport');
 const { Strategy } = require('passport-jwt');
-  
+
 const { jwt } = require('./config');
+
+const expressSession = require("express-session");
+
+var sessionMiddleware = expressSession({
+    name: "COOKIE_NAME",
+    secret: "COOKIE_SECRET_HERE",
+    store: new (require("connect-mongo")(expressSession))({
+        url: "mongodb://localhost:27017/chat"
+    })
+});
+app.use(sessionMiddleware);
+app.use(passport.initialize());
+app.use(passport.session());
+
+// io.use(passportSocketIo.authorize({
+//   key: 'connect.sid',
+//   secret: "12341",
+//   store: new RedisStore,
+//   passport: passport,
+//   cookieParser: cookieParser
+// }));
 
 passport.use(new Strategy(jwt, function(jwt_payload, done) {
   // if jwt_payload not null (this way just faster)
