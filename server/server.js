@@ -8,8 +8,11 @@ const io = require('socket.io')(server, { serveClient: true });
 const mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost:27017/chat', { useMongoClient: true }, (err) => {
-  if (err) console.error("DB connect error", err);
-  console.log('DB connected');
+  if (err) {
+    console.error("DB connect error", err);
+  } else {
+    console.log('DB connected');
+  }
 });
 mongoose.Promise = require('bluebird');
 

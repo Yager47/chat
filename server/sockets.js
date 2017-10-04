@@ -22,7 +22,6 @@ module.exports = io => {
 
       var message = new MessageModel(obj);
       message.$__save({}, (err, o) => {
-        console.log('YOOOOOOOOOOOOOOO');
         if (err) return console.error("MessageModel", err);
         socket.emit('message', o);
         socket.to('all').emit('message', o);
