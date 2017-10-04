@@ -38,7 +38,7 @@ module.exports = io => {
         .exec( (err, messages) => {
           if (!err) {
             socket.emit('history', messages);
-            socket.to('all').emit('history', messages);
+            // socket.to('all').emit('history', messages);
           }
         })
     });
