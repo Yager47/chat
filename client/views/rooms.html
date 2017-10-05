@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Node chat</title>
+  <link rel="shortcut icon" href="">  <!-- because of getting not found error: Cannot GET /favicon.ico -->
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+  <link rel="stylesheet" href="./assets/css/style.css">
+  {% if not error %}
+    <script src='/socket.io/socket.io.js'></script>
+  {% endif %}
+</head>
+<body>
+  
+    <div class="container clearfix">
+      <div class="chat">
+        <div class="chat-header clearfix">
+          <div class="chat-about">
+            <div class="chat-num-users"> Rooms </span></div>
+          </div>
+          <div class="controls">
+            <a href="#" class="logout-btn">Logout</a>
+          </div>
+        </div>
+
+        <div class="chat-history">
+          <ul>
+            {% for conv in conversations %}
+              <li>
+                <div class="message-data">
+                  <span class="message-data-name"> <a href="/?room={{conv._id}}">{{ conv.name }}</a> </span>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="chat-message clearfix">
+          <textarea name="message" placeholder ="Type your message" rows="3"></textarea>
+          <button type="submit">Send</button>
+        </div>
+      </div>
+    </div>
+
+</body>
+</html>

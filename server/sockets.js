@@ -12,15 +12,14 @@ module.exports = io => {
     // add to room
     socket.join('all');
 
-    socket.on('msg', content => {
+    socket.on('msg', (data) => {
       const obj = {
         date: new Date(),
-        content: content,
-        username: socket.id
+        content: data.content,
+        username: socket.id,
+        conversationId: data.roomId
         // var userId = socket.request.session.passport.user;
       };
-
-      console.log("SOCKET REQ", socket.request.user);
 
       var message = new MessageModel(obj);
       message.$__save({}, (err, o) => {
@@ -30,9 +29,9 @@ module.exports = io => {
       });
     });
 
-    socket.on('receiveHistory', () => {
+    socket.on('receiveHistory', (roomId) => {
       MessageModel
-        .find({})
+        .find({}, {"conversationId": roomId})
         .sort({date: -1})
         .limit(50)
         .sort({date: 1})
@@ -41,6 +40,8 @@ module.exports = io => {
           if (!err) {
             socket.emit('history', messages);
             // socket.to('all').emit('history', messages);
+          } else{
+            console.log(err);
           }
         })
     });

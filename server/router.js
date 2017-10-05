@@ -4,6 +4,7 @@ const express = require('express');
 const passport = require('passport');
 const UsersModel = require('./models/users.model');
 const MessagesModel = require('./models/messages.model');
+const ConversationModel = require('./models/conversations.model');
 const _ = require('lodash');
 const config = require('./config');
 const bcrypt = require('bcryptjs');
@@ -33,8 +34,36 @@ function createToken (body) {
 module.exports = app => {
   app.use('/assets', express.static('./client/public'));
 
-  app.get('/', checkAuth, (req, res) => {
-    res.render('index.html', { date: new Date(), username: req.user.username });
+  app.get('/', checkAuth, async( (req, res) => {
+      await (ConversationModel.findOne({_id: req.query.room}, function (err, room) {
+              if (err) {
+                res.status(500).send({message: "Server error."});
+              } else {
+                res.render('index.html', { date: new Date(), room: room });
+              }
+            }));
+    }));
+
+  app.get('/rooms', checkAuth, (req, res) => {
+    const obj = {
+      name: "First room"
+    };
+
+    // var conv = new ConversationModel(obj);
+    // conv.$__save({}, (err, o) => {
+    //   if (err) return console.error("ConversationsModel", err);
+    // });
+
+    ConversationModel
+      .find({})
+      .lean()
+      .exec( (err, conversations) => {
+        if (!err) {
+          res.render('rooms.html', { conversations: conversations, username: req.user.username });
+        } else {
+          res.status(500).send({message: "Server error."});
+        }
+      })
   });
 
   app.post('/login', async( (req, res) => {

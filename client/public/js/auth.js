@@ -45,9 +45,13 @@ $(".logout-btn").on('click', e => {
 
 $( document ).ready( () => {
   var socket = io.connect('http://localhost:7777');
+  
+  var roomId = $(this).children("input[name='room-id']");
+  
   socket.on('connected', function (msg) {
     console.log(msg);
-    socket.emit('receiveHistory');
+
+    socket.emit('receiveHistory', roomId);
   });
 
   socket.on('message', addMessage);
@@ -65,7 +69,7 @@ $( document ).ready( () => {
     var messageContent = selector.val().trim();
     console.log(messageContent);
     if(messageContent !== '') {
-      socket.emit('msg', messageContent);
+      socket.emit('msg', {messageContent: messageContent, roomId: roomId});
       selector.val('');
     }
   });

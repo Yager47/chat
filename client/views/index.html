@@ -39,12 +39,14 @@
     <script src="/assets/js/unauth.js"></script>
   
   {% else %}
-  
+    
+    <input type="hidden" name="room-id" value="{{room._id}}" />
+
     <div class="container clearfix">
       <div class="chat">
         <div class="chat-header clearfix">
           <div class="chat-about">
-            <div class="chat-num-users">Hello, <span id="name">{{ username }}</span></div>
+            <div class="chat-num-users">Room: <span id="name">{{ room.name }}</span></div>
           </div>
           <div class="controls">
             <a href="#" class="logout-btn">Logout</a>
