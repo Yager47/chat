@@ -1,26 +1,32 @@
 'use strict';
 
+const UsersModel = require('./models/users.model');
 const MessageModel = require('./models/messages.model');
-// .on - what you receive
-// .emit - what you send
+
+// asyncawait
+var async = require('asyncawait/async');
+var await = require('asyncawait/await');
 
 module.exports = io => {
 
   io.on('connection', function (socket) {
     socket.emit('connected', "You are connected.");
 
-    // add to room
     socket.join('all');
 
-    socket.on('msg', content => {
+    socket.on('msg', async( (content) => {
+
+      var username = null;
+      let user = await( UsersModel.findOne({ session_id: socket.request.sessionID }).lean().exec());
+      if (user != void(0)) username = user.username;
+      
       const obj = {
         date: new Date(),
         content: content,
-        username: socket.id
-        // var userId = socket.request.session.passport.user;
+        username: username
       };
 
-      console.log("SOCKET REQ", socket.request.user);
+      console.log("SOCKET USEEER", socket.request.sessionID);
 
       var message = new MessageModel(obj);
       message.$__save({}, (err, o) => {
@@ -28,7 +34,7 @@ module.exports = io => {
         socket.emit('message', o);
         socket.to('all').emit('message', o);
       });
-    });
+    }));
 
     socket.on('receiveHistory', () => {
       MessageModel
@@ -40,7 +46,6 @@ module.exports = io => {
         .exec( (err, messages) => {
           if (!err) {
             socket.emit('history', messages);
-            // socket.to('all').emit('history', messages);
           }
         })
     });

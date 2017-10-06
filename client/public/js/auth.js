@@ -27,21 +27,21 @@ $(".logout-btn").on('click', e => {
   });
 });
 
-// $(".clear-btn").on('click', e => {
-//   e.preventDefault();
-//   $.ajax({
-//     url: '/clear',
-//     type: 'POST',
-//     data: {},
-//     success: (res) => {
-//       alert(response(res));
-//       location.reload();
-//     },
-//     error: (res) => {
-//       alert(response(res));
-//     }
-//   });
-// });
+$(".clear-btn").on('click', e => {
+  e.preventDefault();
+  $.ajax({
+    url: '/clear',
+    type: 'POST',
+    data: {},
+    success: (res) => {
+      alert(response(res));
+      location.reload();
+    },
+    error: (res) => {
+      alert(response(res));
+    }
+  });
+});
 
 $( document ).ready( () => {
   var socket = io.connect('http://localhost:7777');

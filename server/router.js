@@ -30,16 +30,23 @@ function createToken (body) {
   );
 }
 
-module.exports = app => {
+module.exports = (app) => {
   app.use('/assets', express.static('./client/public'));
 
   app.get('/', checkAuth, (req, res) => {
+    console.log("REQUEsT", req.sessionID);
+    UsersModel.update({_id: req.user.id}, {
+      session_id: req.sessionID
+    }, function(err, affected, resp) {
+       console.log(resp);
+    })
+    
     res.render('index.html', { date: new Date(), username: req.user.username });
   });
 
   app.post('/login', async( (req, res) => {
       try {
-        let user = await( UsersModel.findOne({ username: {$regex: _.escapeRegExp(req.body.username), $options: "i"} }).lean().exec());  
+        let user = await( UsersModel.findOne({ username: {$regex: _.escapeRegExp(req.body.username), $options: "i"} }).lean().exec());
         if (user != void(0) && bcrypt.compareSync(req.body.password, user.password)) {
           const token = createToken({id: user._id, username: user.username});
   
@@ -65,9 +72,12 @@ module.exports = app => {
         }
   
         user = await( UsersModel.create({
-                username: req.body.username,
-                password: req.body.password
-              }));
+          username:  req.body.username,
+          email:     req.body.email,
+          firstName: req.body.firstName,
+          lastName:  req.body.lastName,
+          password:  req.body.password
+        }));
   
         const token = createToken({id: user._id, username: user.username});
   
@@ -79,18 +89,28 @@ module.exports = app => {
       }
       catch (e) {
         console.error('E, register,', e);
-        res.status(500).send({message: "Server error."});
+        var errorMessage = '';
+
+        for (var k in e.errors) {
+          errorMessage += (k + ": " + e.errors[k].message + "\n");
+        }
+        res.status(500).send({message: errorMessage});
       }
     }));
 
   app.post('/logout', (req, res) => {
     res.clearCookie('token');
-    res.status(200).send({message: "Logged out successfully."});
+    req.session.regenerate(function(err) {
+      // will have a new session here if no error
+      // res.send(null);
+      res.status(200).send({message: "Logged out successfully."});
+    });
   });
 
-  // app.post('/clear', (req, res) => {
-  //   MessagesModel.remove({}, function (e) {});
-  //   res.redirect('/');
-  // });
+  app.post('/clear', (req, res) => {
+    MessagesModel.remove({}, function (e) {});
+    // res.redirect('/');
+    res.status(200).send({message: "Chat was successfully cleared!"});
+  });
 
 };
