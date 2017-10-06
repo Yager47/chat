@@ -36,12 +36,6 @@ module.exports = (app) => {
   app.use('/assets', express.static('./client/public'));
 
   app.get('/', checkAuth, (req, res) => {
-    UsersModel.update({_id: req.user.id}, {
-      session_id: req.sessionID
-    }, function(err, affected, resp) {
-       console.log(resp);
-    })
-    
     res.render('index.html', { username: req.user.username });
   });
 
@@ -53,6 +47,9 @@ module.exports = (app) => {
       if (user != void(0) && bcrypt.compareSync(req.body.password, user.password)) {
         const token = createToken({id: user._id, username: user.username});
 
+        UsersModel.update({_id: user._id}, { session_id: req.sessionID }, function(err, affected, resp) {
+           console.log(resp);
+        });
         res.cookie('token', token, { httpOnly: true });
         res.status(200).send({message: "User logged in successfully."});
       } else {
