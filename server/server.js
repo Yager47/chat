@@ -21,6 +21,9 @@ const { Strategy } = require('passport-jwt');
 const { jwt } = require('./config');
 
 
+var fileUpload = require("socketio-file-upload");
+app.use(fileUpload.router);
+
 app.use(passport.initialize());
 app.use(passport.session());
 

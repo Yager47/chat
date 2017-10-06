@@ -50,6 +50,29 @@ $( document ).ready( () => {
     socket.emit('receiveHistory');
   });
 
+  // socket.on('connect', function(){
+  //   var delivery = new Delivery(socket);
+
+  //   delivery.on('delivery.connect', function (delivery) {
+  //     $('.chat-message button').on('click', evt => {
+  //       var file = $("input[type=file]")[0].files[0];
+  //       var extraParams = {foo: 'bar'};
+        
+  //       delivery.send(file, extraParams);
+        
+  //       evt.preventDefault();
+  //     });
+  //   });
+
+  //   delivery.on('send.success',function(fileUID){
+  //     console.log("file was successfully sent.");
+  //   });
+  // });
+
+  var uploader = new SocketIOFileUpload(socket);
+  uploader.listenOnInput(document.getElementById("siofu_input"));
+
+
   socket.on('message', addMessage);
 
   socket.on('history', messages => {

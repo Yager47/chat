@@ -1,5 +1,8 @@
 'use strict';
 
+// const dl = require('delivery');
+// const fs = require('fs');
+
 const UsersModel = require('./models/users.model');
 const MessageModel = require('./models/messages.model');
 
@@ -7,10 +10,29 @@ const MessageModel = require('./models/messages.model');
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 
+var fileUpload = require("socketio-file-upload"); 
+
 module.exports = io => {
 
   io.on('connection', function (socket) {
     socket.emit('connected', "You are connected.");
+
+    var uploader = new fileUpload();
+    uploader.dir = "/";
+    uploader.listen(socket);
+
+    // var delivery = dl.listen(socket);
+
+    // delivery.on('receive.success',function(file){
+    //   var params = file.params;
+    //   fs.writeFile(file.name,file.buffer, function(err){
+    //     if(err){
+    //       console.log('File could not be saved.');
+    //     }else{
+    //       console.log('File saved.');
+    //     };
+    //   });
+    // });
 
     socket.join('all');
 
