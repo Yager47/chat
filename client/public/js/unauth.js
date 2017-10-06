@@ -1,4 +1,4 @@
-// change forms login / register
+// switch forms login / register
 $('form .message a').on('click', e => {
   e.preventDefault();
   if($('.login:visible').length > 0) {
@@ -10,7 +10,7 @@ $('form .message a').on('click', e => {
   }
 });
 
-// parse response text to more readable
+// parse response text
 function response (data) {
   let resp = data.responseText;
   try {

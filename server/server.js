@@ -35,11 +35,11 @@ app.use(session({
 
 io.use(passportSocketIo.authorize({
   cookieParser: cookieParser,
-  key:          'connect.sid',
-  secret:       '64YRIEife7e7y4Ryue7r',
-  store:        sessionStore,
-  success:      onAuthorizeSuccess,
-  fail:         onAuthorizeFail
+  key: 'connect.sid',
+  secret: '64YRIEife7e7y4Ryue7r',
+  store: sessionStore,
+  success: onAuthorizeSuccess,
+  fail: onAuthorizeFail
 }));
 
 function onAuthorizeSuccess(data, accept){
@@ -48,8 +48,6 @@ function onAuthorizeSuccess(data, accept){
 }
 
 function onAuthorizeFail(data, message, error, accept){
-  // if(error)
-  //   throw new Error(message);
   console.log('failed connection to socket.io:', message);
   accept();
 }
@@ -74,6 +72,7 @@ nunjucks.configure('./client/views', {
   autoescape: true,
   express: app
 });
+
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));

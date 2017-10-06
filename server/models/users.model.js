@@ -46,6 +46,7 @@ var UsersSchema = new Schema({
 
 UsersSchema.plugin(uniqueValidator);
 
+// make hash secure password before creating user
 UsersSchema.pre('save', function(next) {
   if (this.isModified('password') || this.isNew()) {
     this.password = bcrypt.hashSync(this.password, 12);
@@ -53,22 +54,4 @@ UsersSchema.pre('save', function(next) {
   next();
 });
 
-
-var UsersModel = mongoose.model('UsersModel', UsersSchema);
-
-module.exports = UsersModel;
-
-
-// uniqueness validations
-
-// UsersModel.schema.path('email').validate(function (value, respond) {
-//   UsersModel.findOne({ email: value }, function (err, user) {
-//       if(user) respond(false);
-//   });
-// }, 'This email address is already registered');
-
-// UsersModel.schema.path('username').validate(function (value, respond) {
-//   UsersModel.findOne({ username: value }, function (err, user) {
-//       if(user) respond(false);
-//   });
-// }, 'This username is already registered');
+module.exports = mongoose.model('UsersModel', UsersSchema);

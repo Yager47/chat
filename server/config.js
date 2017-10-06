@@ -9,7 +9,7 @@ function ExtractJwt (req) {
 module.exports = {
   jwt: {
     jwtFromRequest: ExtractJwt,
-    secretOrKey: 'XU8fMhgfxqsep4SNxBeZ9bX' // via password generator
+    secretOrKey: 'XU8fMhgfxqsep4SNxBeZ9bX'
   },
   expiresIn: '1 day'
 }

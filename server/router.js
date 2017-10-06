@@ -2,8 +2,10 @@
 
 const express = require('express');
 const passport = require('passport');
+
 const UsersModel = require('./models/users.model');
 const MessagesModel = require('./models/messages.model');
+
 const _ = require('lodash');
 const config = require('./config');
 const bcrypt = require('bcryptjs');
@@ -13,7 +15,7 @@ const jwt = require('jsonwebtoken');
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 
-
+// check authorization with Passport.js
 function checkAuth(req, res, next) {
   passport.authenticate('jwt', { session: false }, (err, decryptToken, jwtError) => {
     if (jwtError != void(0) || err != void(0)) return res.render('index.html', { error: err || jwtError });
@@ -34,34 +36,33 @@ module.exports = (app) => {
   app.use('/assets', express.static('./client/public'));
 
   app.get('/', checkAuth, (req, res) => {
-    console.log("REQUEsT", req.sessionID);
     UsersModel.update({_id: req.user.id}, {
       session_id: req.sessionID
     }, function(err, affected, resp) {
        console.log(resp);
     })
     
-    res.render('index.html', { date: new Date(), username: req.user.username });
+    res.render('index.html', { username: req.user.username });
   });
 
   app.post('/login', async( (req, res) => {
-      try {
-        let user = await( UsersModel.findOne({ username: {$regex: _.escapeRegExp(req.body.username), $options: "i"} }).lean().exec());
-        if (user != void(0) && bcrypt.compareSync(req.body.password, user.password)) {
-          const token = createToken({id: user._id, username: user.username});
-  
-          res.cookie('token', token, {
-            httpOnly: true
-          });
-          res.status(200).send({message: "User logged in successfully."});
-        } else {
-          res.status(400).send({message: "User not exists or password is not correct."});
-        }
+    try {
+      let user = await( UsersModel.findOne({ username: {$regex: _.escapeRegExp(req.body.username), $options: "i"} }).lean().exec());
+      
+      // if user exists and password matched
+      if (user != void(0) && bcrypt.compareSync(req.body.password, user.password)) {
+        const token = createToken({id: user._id, username: user.username});
+
+        res.cookie('token', token, { httpOnly: true });
+        res.status(200).send({message: "User logged in successfully."});
+      } else {
+        res.status(400).send({message: "User not exists or password is not correct."});
       }
-      catch (e) {
-        console.error('E, login,', e);
-        res.status(500).send({message: "Server error."});
-      }
+    }
+    catch (e) {
+      console.error('E, login,', e);
+      res.status(500).send({message: "Server error."});
+    }
     }));
 
   app.post('/register', async( (req, res) => {
@@ -81,16 +82,12 @@ module.exports = (app) => {
   
         const token = createToken({id: user._id, username: user.username});
   
-        res.cookie('token', token, {
-          httpOnly: true
-        });
-  
+        res.cookie('token', token, { httpOnly: true });
         res.status(200).send({message: "User created."});
       }
       catch (e) {
         console.error('E, register,', e);
         var errorMessage = '';
-
         for (var k in e.errors) {
           errorMessage += (k + ": " + e.errors[k].message + "\n");
         }
@@ -101,15 +98,12 @@ module.exports = (app) => {
   app.post('/logout', (req, res) => {
     res.clearCookie('token');
     req.session.regenerate(function(err) {
-      // will have a new session here if no error
-      // res.send(null);
       res.status(200).send({message: "Logged out successfully."});
     });
   });
 
   app.post('/clear', (req, res) => {
     MessagesModel.remove({}, function (e) {});
-    // res.redirect('/');
     res.status(200).send({message: "Chat was successfully cleared!"});
   });
 

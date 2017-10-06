@@ -26,8 +26,6 @@ module.exports = io => {
         username: username
       };
 
-      console.log("SOCKET USEEER", socket.request.sessionID);
-
       var message = new MessageModel(obj);
       message.$__save({}, (err, o) => {
         if (err) return console.error("MessageModel", err);
