@@ -44,7 +44,7 @@ $(".clear-btn").on('click', e => {
 });
 
 $( document ).ready( () => {
-  var socket = io.connect('http://localhost:16407');
+  var socket = io.connect('http://localhost:7777');
   socket.on('connected', function (msg) {
     console.log(msg);
     socket.emit('receiveHistory');
