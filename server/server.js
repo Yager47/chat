@@ -20,6 +20,7 @@ const { Strategy } = require('passport-jwt');
 
 const { jwt } = require('./config');
 
+const PORT = process.env.PORT || 7777;
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -85,6 +86,10 @@ require('./router')(app);
 
 require('./sockets')(io);
 
-server.listen(7777, '0.0.0.0', () => {
-  console.log('Server started on port 7777');
+// server.listen(7777, '0.0.0.0', () => {
+//   console.log('Server started on port 7777');
+// });
+
+server.listen(PORT, () => {
+  console.log('Server started on http://localhost:%s', PORT);
 });

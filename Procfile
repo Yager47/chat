@@ -1,2 +1,2 @@
-web: service mongod start
+worker: service mongod start
 web: node server/server.js
